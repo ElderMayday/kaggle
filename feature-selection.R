@@ -1,0 +1,16 @@
+#load a dataset and use it as the main source of data
+library(mlbench)
+library(FSelector)
+
+dat = read.csv("D:\\kaggle\\train.csv", header = TRUE)
+
+#calculate weights for each attribute using some function
+weights <- information.gain(SalePrice~., dat)
+print(weights)
+
+#select a subset of 5 features with the lowest weight
+subset <- cutoff.k(weights, 5)
+
+#print the results
+f <- as.simple.formula(subset, "Class")
+print(f)
