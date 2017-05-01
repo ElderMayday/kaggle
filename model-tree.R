@@ -16,13 +16,11 @@ feature_filter <- function(input) {
 
 train_raw = read.csv("D:\\kaggle\\train.csv", header = TRUE)
 train = feature_filter(train_raw)
-regtree = tree(SalePrice~., train) 
-plot(regtree)
-#text(regtree)
+model = tree(SalePrice~., train, minsize = 5, mindev = 0) 
+plot(model)
+text(model)
 
-
-
-row = train[,1:(ncol(train)-1)]
-row[,"PredictedPrice"] = predict(regtree, row)
-row[,"RealPrice"] = train[,"SalePrice"]
+prediction = train[,1:(ncol(train)-1)]
+prediction[,"PredictedPrice"] = predict(model, prediction)
+prediction[,"RealPrice"] = train[,"SalePrice"]
 
