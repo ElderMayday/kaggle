@@ -1,17 +1,27 @@
 library(FSelector)   #load the feature-selection library
 
+#takes dataframe and shows the features with satisfactory information gain
+feature_selector <- function(data)
+{
+  #calculate the information gain of each feature
+  features <- information.gain(SalePrice~., data)
+  result = data.frame()
+  #print every feature with IF higher than 0.1
+  for (i in 1:nrow(features))
+  {
+    if (features[i, 1] > 0.1)
+    {
+      result <- rbind(result, data.frame("feature_name"= row_names[i], "feature_gain" = features[i, 1]))
+    }
+  }
+
+  print(result)
+  return(result)
+}
+
 #load the train data
 train = read.csv("D:\\kaggle\\train.csv", header = TRUE)
 
-#calculate the information gain of each feature
-weights <- information.gain(SalePrice~., train)
+#do feature selection
+features = feature_selector(train)
 
-print(weights)
-
-#select top features
-subset <- cutoff.k(weights, 5)
-
-#print the results
-f <- as.simple.formula(subset, "Features")
-
-print(f)
