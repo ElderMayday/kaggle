@@ -17,8 +17,11 @@ feature_filter <- function(input) {
 }
 
 #splits the [data] dataframe into [fold_num] folds
-split_folds <- function(data, fold_num=5)
+split_folds <- function(data_ordered, fold_num=5)
 {
+  #permutate the datarows in a random way
+  data <- data_ordered[sample(nrow(data_ordered)),]
+  
   #the size of a small fold
   size = nrow(data) %/% fold_num
   
@@ -59,11 +62,16 @@ split_folds <- function(data, fold_num=5)
   return(folds)
 }
 
+#
+cross_validation <- function(folds, model)
+{
+  
+}
+
 train_raw = read.csv("D:\\kaggle\\train.csv", header = TRUE)
 train = feature_filter(train_raw)
 
 folds = split_folds(train)
-
 
 
 con=lazy.control(conIdPar=NULL, linIdPar=1, quaIdPar=NULL, distance=c("manhattan","euclidean"), metric=NULL, cmbPar=1, lambda=1e+03)
