@@ -20,7 +20,8 @@ feature_filter <- function(input) {
 split_folds <- function(data_ordered, fold_num=5)
 {
   #permutate the datarows in a random way
-  data <- data_ordered[sample(nrow(data_ordered)),]
+  data = data_ordered
+  #data <- data_ordered[sample(nrow(data_ordered)),]    TO-RETURN!!!
   
   #the size of a small fold
   size = nrow(data) %/% fold_num
@@ -62,10 +63,57 @@ split_folds <- function(data_ordered, fold_num=5)
   return(folds)
 }
 
-#
-cross_validation <- function(folds, model)
+#evaluates the MSE of the prediction
+evaluate <- function(prediction)
 {
+  return(mean((prediction[,"PredictedPrice"] - prediction[,"RealPrice"])^2))
+}
+
+
+#evaluates an abstract [model] using cross-validation technique over the given [folds]
+cross_validation <- function(folds, model, model_flag, parameters)
+{
+  iteration = 1
   
+  while (iteration <= length(folds))
+  {
+    print(iteration)
+    
+    test = folds[[iteration]]
+    
+    train = data.frame()
+    
+    fold_num = 1
+    
+    while (fold_num <= length(folds))
+    {
+      if (fold_num != iteration)
+        train <- rbind(train, folds[[fold_num]])
+      
+      fold_num = fold_num + 1
+    }
+    
+    iteration = iteration + 1
+  }
+}
+
+get_tree_parameters <- function()
+{
+  param_tree_1 = data.frame(nobs = 10000)
+  
+  mincut_vector = c(1, 2, 3, 4, 5, 10, 20, 50, 100)
+  minsize_vector = c(2:10)
+  
+  param_tree_2a = data.frame(mincut = mincut_vector)
+  param_tree_2b = data.frame(minsize = minsize_vector)
+  param_tree_2 = merge(param_tree_2a, param_tree_2b)
+  param_tree_2[,'minsize'] = param_tree_2[,'minsize'] * param_tree_2[,'mincut']
+  
+  param_tree_3 = data.frame(mindev = c(0, 0.01, 0.05, 0.10, 0.50, 1.0, 10.0, 100.0))
+  
+  param_tree = merge(param_tree_1, param_tree_2)
+  param_tree = merge(param_tree, param_tree_3)
+  return(param_tree)
 }
 
 train_raw = read.csv("D:\\kaggle\\train.csv", header = TRUE)
@@ -73,7 +121,17 @@ train = feature_filter(train_raw)
 
 folds = split_folds(train)
 
+cross_validation(folds, 3, 1, 3)
 
+tree_parameters = get_tree_parameters()
+
+
+
+
+
+
+if (FALSE)
+{
 con=lazy.control(conIdPar=NULL, linIdPar=1, quaIdPar=NULL, distance=c("manhattan","euclidean"), metric=NULL, cmbPar=1, lambda=1e+03)
 model = lazy(SalePrice~., train,control=con)   #lazy
 
@@ -90,4 +148,4 @@ vec = prediction[,"PredictedPrice"] - prediction[,"RealPrice"]
 mse = mean((prediction[,"PredictedPrice"] - prediction[,"RealPrice"])^2)
 rmse = sqrt(mse)
 print(rmse)
-
+}
