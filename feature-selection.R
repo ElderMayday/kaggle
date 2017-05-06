@@ -5,8 +5,11 @@ feature_selector <- function(data)
 {
   #calculate the information gain of each feature
   features <- information.gain(SalePrice~., data)
+  
+  #result dataframe
   result = data.frame()
-  #print every feature with IF higher than 0.1
+  
+  #select every feature with IF higher than 0.1
   for (i in 1:nrow(features))
   {
     if (features[i, 1] > 0.1)
@@ -15,7 +18,9 @@ feature_selector <- function(data)
     }
   }
 
+  #print the selected features
   print(result)
+  
   return(result)
 }
 

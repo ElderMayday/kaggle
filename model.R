@@ -16,15 +16,61 @@ feature_filter <- function(input) {
   return(result)
 }
 
+#splits the [data] dataframe into [fold_num] folds
+split_folds <- function(data, fold_num=5)
+{
+  #the size of a small fold
+  size = nrow(data) %/% fold_num
+  
+  #number of (size+1) folds
+  bigfold_num = nrow(data) %% fold_num
+  
+  #number of (size) folds
+  smallfold_num = fold_num - bigfold_num
+  
+  #current datarow
+  current_row = 1
+  
+  #current fold number
+  current_fold = 1
+  
+  #the vector of all folds
+  folds = list()
+  
+  #bigfold partition loop
+  while (current_fold <= bigfold_num)
+  {
+    folds[[length(folds) + 1]] = data[current_row:(current_row + size),]
+    current_fold = current_fold + 1
+    current_row = current_row + size + 1
+  }
+  
+  #reset the fold counter for the remaining small folds
+  current_fold = 1
+  
+  #smallfold partition loop
+  while (current_fold <= smallfold_num)
+  {
+    folds[[length(folds) + 1]] = data[current_row:(current_row + size - 1),]
+    current_fold = current_fold + 1
+    current_row = current_row + size
+  }
+  
+  return(folds)
+}
+
 train_raw = read.csv("D:\\kaggle\\train.csv", header = TRUE)
 train = feature_filter(train_raw)
+
+folds = split_folds(train)
+
+
+
 con=lazy.control(conIdPar=NULL, linIdPar=1, quaIdPar=NULL, distance=c("manhattan","euclidean"), metric=NULL, cmbPar=1, lambda=1e+03)
 model = lazy(SalePrice~., train,control=con)   #lazy
 
 model = tree(SalePrice~., train, con=tree.control(nobs = 10000, mincut = 1, minsize = 2, mindev = 0))   #lazy
 
-model = nnet(SalePrice~., train, size = 2, rang = 0.1,
-             decay = 5e-4, maxit = 200)
 
 model = svm(SalePrice~., train, degree=10, nu = 0.9, cachesize = 100, tolerance = 0.1, epsilon = 0.5)
 
