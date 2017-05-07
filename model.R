@@ -70,15 +70,15 @@ evaluate <- function(prediction)
 }
 
 
-#evaluates an abstract [model] using cross-validation technique over the given [folds]
-cross_validation <- function(folds, model, model_flag, parameters)
+#teaches and evaluates an abstract model using cross-validation technique over the given [folds] with current [param] configuration
+cross_validation <- function(folds, model_flag, param)
 {
+  mse_all = c()
+  
   iteration = 1
   
   while (iteration <= length(folds))
   {
-    print(iteration)
-    
     test = folds[[iteration]]
     
     train = data.frame()
@@ -93,10 +93,42 @@ cross_validation <- function(folds, model, model_flag, parameters)
       fold_num = fold_num + 1
     }
     
+    model = teach_model(train, model_flag, param)
+    
+    prediction = test[,1:(ncol(train)-1)]
+    predicted = predict(model, prediction)
+    mse = mean((predicted - test[,"SalePrice"])^2)
+    mse_all = c(mse_all, mse)
+    
     iteration = iteration + 1
   }
+  
+  return(sqrt(mse))
 }
 
+
+
+#teaches a model depending of its type and hyperparameter
+#model_flag: 1 - tree, 2 - lazy, 3 - svm
+teach_model <- function(train, model_flag, param)
+{
+  if (model_flag == 1)
+  {
+    model = tree(SalePrice~., train, con=tree.control(nobs = param[1, 'nobs'], mincut = param[1, 'mincut'], minsize = param[1, 'minsize'], mindev = param[1, 'mindev']))
+  }
+  else if (model_flag == 2)
+  {
+    
+  }
+  else if (model_flag == 3)
+  {
+    
+  }
+  return(model)
+}
+
+
+#creates a predefined set of hyperparameter configurations
 get_tree_parameters <- function()
 {
   param_tree_1 = data.frame(nobs = 10000)
@@ -121,14 +153,20 @@ train = feature_filter(train_raw)
 
 folds = split_folds(train)
 
-cross_validation(folds, 3, 1, 3)
-
 tree_parameters = get_tree_parameters()
 
+rmse_all = c()
 
 
 
+for (i in 1:nrow(tree_parameters))
+{
+  rmse = cross_validation(folds, 1, tree_parameters[i, ])
+  rmse_all = c(rmse_all, rmse)
+}
 
+min_index = which.min(rmse_all)
+min_value = min(rmse_all)
 
 if (FALSE)
 {
