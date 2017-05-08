@@ -1,5 +1,7 @@
 library(FSelector)   #load the feature-selection library
 
+setwd('D:/kaggle')
+
 #takes dataframe and shows the features with satisfactory information gain
 feature_selector <- function(data)
 {
@@ -8,6 +10,8 @@ feature_selector <- function(data)
   
   #result dataframe
   result = data.frame()
+  
+  row_names = row.names(features)
   
   #select every feature with IF higher than 0.1
   for (i in 1:nrow(features))
@@ -25,7 +29,7 @@ feature_selector <- function(data)
 }
 
 #load the train data
-train = read.csv("D:\\kaggle\\train.csv", header = TRUE)
+train = read.csv("./train.csv", header = TRUE)
 
 #do feature selection
 features = feature_selector(train)
