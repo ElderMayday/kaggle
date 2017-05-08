@@ -97,9 +97,8 @@ select_model <- function(train, model_flag, param)
 }
 
 
-train_raw = read.csv("./train.csv", header = TRUE)
+train_raw = read.csv("./train.csv", header = TRUE, stringsAsFactors=FALSE)
 train = feature_filter(train_raw)
-
 
 tree_parameters = get_tree_parameters()
 result_tree = select_model(train, 1, tree_parameters)
@@ -137,6 +136,7 @@ model = svm(SalePrice~., train, degree=10, nu = 0.9, cachesize = 100, tolerance 
 
 
 prediction = train[,1:(ncol(train)-1)]
+predicted = predict(model, prediction)
 prediction[,"PredictedPrice"] = predict(model, prediction)
 prediction[,"RealPrice"] = train[,"SalePrice"]
 vec = prediction[,"PredictedPrice"] - prediction[,"RealPrice"]
