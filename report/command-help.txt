@@ -1,0 +1,7 @@
+The report has been made using R Jupyter within Anaconda framework.
+
+start the jupyter server:
+jupyter notebook
+
+install the R language features for Anaconda:
+conda install -c r r-essentials
