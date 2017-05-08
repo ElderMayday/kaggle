@@ -2,22 +2,11 @@ library(lazy)
 library(tree)
 library(e1071)
 
+setwd('D:/kaggle')  #TO-MODIFY sets the defaul folder depending on the directory path!!!
 source("parameters.R")
 source("split-folds.R")
+source("feature-filter.R")
 
-#Filters the train dataframe by features
-#Only higher than 0.1 IG features were selected
-#Non-numeric and sparse features are however excluded
-#LotFrontage and GarageYrBlt and MasVnrArea excluded because of NaN values
-feature_filter <- function(input) {
-  result <- subset(input, select=c(OverallQual, GrLivArea, 
-                                   GarageCars, GarageArea, YearBuilt, TotalBsmtSF, MSSubClass,
-                                   X1stFlrSF, FullBath, YearRemodAdd,
-                                   TotRmsAbvGrd, X2ndFlrSF, Fireplaces, LotArea, OpenPorchSF,
-                                   BsmtFinSF1,
-                                   OverallCond, WoodDeckSF, HalfBath, BsmtUnfSF, SalePrice))
-  return(result)
-}
 
 
 
@@ -53,11 +42,8 @@ cross_validation <- function(folds, model_flag, param)
     
     model = teach_model(train, model_flag, param)
     
-    prediction = test[,1:(ncol(train)-1)]
+    prediction = test[,1:(ncol(test)-1)]
     predicted = predict(model, prediction)
-    #p1 = predicted[[1]]
-    #p2 = test[,"SalePrice"]
-    #p = p1 - p2
     mse = mean((predicted[[1]] - test[,"SalePrice"])^2)
     mse_all = c(mse_all, mse)
     
@@ -79,12 +65,11 @@ teach_model <- function(train, model_flag, param)
   }
   else if (model_flag == 2)
   {
-    cont = lazy.control(conIdPar=param[1, 'conIdPar'], linIdPar=param[1, 'linIdPar'], quaIdPar=param[1, 'quaIdPar'], distance=c("manhattan","euclidean"), metric=param[1, 'metric'], cmbPar=param[1,'cmbPar'], lambda=param[1, 'lambda'])
-    model = lazy(SalePrice~., train, control = con)
+    model = lazy(SalePrice~., train, control = lazy.control(conIdPar=NULL, linIdPar=param[1, 'linIdPar'], quaIdPar=NULL, distance=c("manhattan","euclidean"), metric=NULL, cmbPar=1, lambda=param[1, 'lambda']))
   }
   else if (model_flag == 3)
   {
-    
+    model = svm(SalePrice~., train, degree=param[1, 'degree'], nu=param[1, 'nu'], cachesize = 100, tolerance=param[1, 'tolerance'], epsilon=param[1, 'epsilon'])
   }
   return(model)
 }
@@ -111,27 +96,34 @@ select_model <- function(train, model_flag, param)
   return(c(min_index, min_value))
 }
 
-setwd('D:/kaggle')  #TO-MODIFY depending on the directory path!!!
+
 train_raw = read.csv("./train.csv", header = TRUE)
 train = feature_filter(train_raw)
 
 
 tree_parameters = get_tree_parameters()
-result = select_model(train, 1, tree_parameters)
+result_tree = select_model(train, 1, tree_parameters)
 
 print('tree_index = ')
-print(result[1])
+print(result_tree[1])
 print('tree_rmse = ')
-print(result[2])
-
+print(result_tree[2])
 
 lazy_parameters = get_lazy_parameters()
-result = select_model(train, 2, lazy_parameters)
+result_lazy = select_model(train, 2, lazy_parameters)
 
 print('lazy_index = ')
-print(result[1])
+print(result_lazy[1])
 print('lazy_rmse = ')
-print(result[2])
+print(result_lazy[2])
+
+svm_parameters = get_svm_parameters()
+result_svm = select_model(train, 3, svm_parameters)
+
+print('svm_index = ')
+print(result_svm[1])
+print('svm_rmse = ')
+print(result_svm[2])
 
 if (FALSE)
 {

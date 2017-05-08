@@ -23,18 +23,14 @@ get_tree_parameters <- function()
 #creates a predefined set of hyperparameter configurations for lazy model
 get_lazy_parameters <- function()
 {
-  param_lazy_1 = data.frame(conIdPar = c(0.1, 1, 10))
-  param_lazy_2 = data.frame(linIdPar = c(0.1, 1, 10))
-  param_lazy_3 = data.frame(quaIdPar = c(0.1, 1, 10))
-  param_lazy_4 = data.frame(metric = c(1))
-  param_lazy_5 = data.frame(cmbPar = c(1, 2, 3))
-  param_lazy_6 = data.frame(lambda = c(1e+01, 1e+02, 1e+03, 1e+04))
+  param_lazy_1 = data.frame(linIdPar = c(1, 2))
+  param_lazy_2 = data.frame(metric = c(1))
+  param_lazy_3 = data.frame(cmbPar = c(1, 2, 3))
+  param_lazy_4 = data.frame(lambda = c(1e+01, 1e+02, 1e+03, 1e+04))
   
-  param_lazy = merge(param_lazy_1, param_lazy_2, all=True)
-  param_lazy = merge(param_lazy, param_lazy_3, all=True)
+  param_lazy = merge(param_lazy_1, param_lazy_2)
+  param_lazy = merge(param_lazy, param_lazy_3)
   param_lazy = merge(param_lazy, param_lazy_4)
-  param_lazy = merge(param_lazy, param_lazy_5, all=True)
-  param_lazy = merge(param_lazy, param_lazy_6)
   
   return(param_lazy)
 }

@@ -2,8 +2,7 @@
 split_folds <- function(data_ordered, fold_num=5)
 {
   #permutate the datarows in a random way
-  data = data_ordered
-  #data <- data_ordered[sample(nrow(data_ordered)),]    TO-RETURN!!!
+  data <- data_ordered[sample(nrow(data_ordered)),]
   
   #the size of a small fold
   size = nrow(data) %/% fold_num
