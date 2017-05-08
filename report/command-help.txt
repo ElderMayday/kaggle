@@ -5,3 +5,6 @@ jupyter notebook
 
 install the R language features for Anaconda:
 conda install -c r r-essentials
+
+install additional packages for the Anaconda run R in bash or cmd:
+install.packages("[package_name]", "[anaconda_path]/Anaconda3/R/library")

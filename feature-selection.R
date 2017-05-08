@@ -1,6 +1,6 @@
 library(FSelector)   #load the feature-selection library
 
-setwd('D:/kaggle')
+setwd('D:/kaggle')  #TO-MODIFY sets the defaul folder depending on the directory path!!!
 
 #takes dataframe and shows the features with satisfactory information gain
 feature_selector <- function(data)
