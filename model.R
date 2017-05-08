@@ -2,6 +2,9 @@ library(lazy)
 library(tree)
 library(e1071)
 
+source("parameters.R")
+source("split-folds.R")
+
 #Filters the train dataframe by features
 #Only higher than 0.1 IG features were selected
 #Non-numeric and sparse features are however excluded
@@ -16,52 +19,7 @@ feature_filter <- function(input) {
   return(result)
 }
 
-#splits the [data] dataframe into [fold_num] folds
-split_folds <- function(data_ordered, fold_num=5)
-{
-  #permutate the datarows in a random way
-  data = data_ordered
-  #data <- data_ordered[sample(nrow(data_ordered)),]    TO-RETURN!!!
-  
-  #the size of a small fold
-  size = nrow(data) %/% fold_num
-  
-  #number of (size+1) folds
-  bigfold_num = nrow(data) %% fold_num
-  
-  #number of (size) folds
-  smallfold_num = fold_num - bigfold_num
-  
-  #current datarow
-  current_row = 1
-  
-  #current fold number
-  current_fold = 1
-  
-  #the vector of all folds
-  folds = list()
-  
-  #bigfold partition loop
-  while (current_fold <= bigfold_num)
-  {
-    folds[[length(folds) + 1]] = data[current_row:(current_row + size),]
-    current_fold = current_fold + 1
-    current_row = current_row + size + 1
-  }
-  
-  #reset the fold counter for the remaining small folds
-  current_fold = 1
-  
-  #smallfold partition loop
-  while (current_fold <= smallfold_num)
-  {
-    folds[[length(folds) + 1]] = data[current_row:(current_row + size - 1),]
-    current_fold = current_fold + 1
-    current_row = current_row + size
-  }
-  
-  return(folds)
-}
+
 
 #evaluates the MSE of the prediction
 evaluate <- function(prediction)
@@ -97,7 +55,10 @@ cross_validation <- function(folds, model_flag, param)
     
     prediction = test[,1:(ncol(train)-1)]
     predicted = predict(model, prediction)
-    mse = mean((predicted - test[,"SalePrice"])^2)
+    #p1 = predicted[[1]]
+    #p2 = test[,"SalePrice"]
+    #p = p1 - p2
+    mse = mean((predicted[[1]] - test[,"SalePrice"])^2)
     mse_all = c(mse_all, mse)
     
     iteration = iteration + 1
@@ -114,11 +75,12 @@ teach_model <- function(train, model_flag, param)
 {
   if (model_flag == 1)
   {
-    model = tree(SalePrice~., train, con=tree.control(nobs = param[1, 'nobs'], mincut = param[1, 'mincut'], minsize = param[1, 'minsize'], mindev = param[1, 'mindev']))
+    model = tree(SalePrice~., train, control = tree.control(nobs = param[1, 'nobs'], mincut = param[1, 'mincut'], minsize = param[1, 'minsize'], mindev = param[1, 'mindev']))
   }
   else if (model_flag == 2)
   {
-    
+    cont = lazy.control(conIdPar=param[1, 'conIdPar'], linIdPar=param[1, 'linIdPar'], quaIdPar=param[1, 'quaIdPar'], distance=c("manhattan","euclidean"), metric=param[1, 'metric'], cmbPar=param[1,'cmbPar'], lambda=param[1, 'lambda'])
+    model = lazy(SalePrice~., train, control = con)
   }
   else if (model_flag == 3)
   {
@@ -128,45 +90,48 @@ teach_model <- function(train, model_flag, param)
 }
 
 
-#creates a predefined set of hyperparameter configurations
-get_tree_parameters <- function()
+
+
+
+select_model <- function(train, model_flag, param)
 {
-  param_tree_1 = data.frame(nobs = 10000)
+  folds = split_folds(train)
   
-  mincut_vector = c(1, 2, 3, 4, 5, 10, 20, 50, 100)
-  minsize_vector = c(2:10)
+  rmse_all = c()
   
-  param_tree_2a = data.frame(mincut = mincut_vector)
-  param_tree_2b = data.frame(minsize = minsize_vector)
-  param_tree_2 = merge(param_tree_2a, param_tree_2b)
-  param_tree_2[,'minsize'] = param_tree_2[,'minsize'] * param_tree_2[,'mincut']
+  for (i in 1:nrow(param))
+  {
+    rmse = cross_validation(folds, model_flag, param[i, ])
+    rmse_all = c(rmse_all, rmse)
+  }
   
-  param_tree_3 = data.frame(mindev = c(0, 0.01, 0.05, 0.10, 0.50, 1.0, 10.0, 100.0))
+  min_index = which.min(rmse_all)
+  min_value = min(rmse_all)
   
-  param_tree = merge(param_tree_1, param_tree_2)
-  param_tree = merge(param_tree, param_tree_3)
-  return(param_tree)
+  return(c(min_index, min_value))
 }
 
-train_raw = read.csv("D:\\kaggle\\train.csv", header = TRUE)
+setwd('D:/kaggle')  #TO-MODIFY depending on the directory path!!!
+train_raw = read.csv("./train.csv", header = TRUE)
 train = feature_filter(train_raw)
 
-folds = split_folds(train)
 
 tree_parameters = get_tree_parameters()
+result = select_model(train, 1, tree_parameters)
 
-rmse_all = c()
+print('tree_index = ')
+print(result[1])
+print('tree_rmse = ')
+print(result[2])
 
 
+lazy_parameters = get_lazy_parameters()
+result = select_model(train, 2, lazy_parameters)
 
-for (i in 1:nrow(tree_parameters))
-{
-  rmse = cross_validation(folds, 1, tree_parameters[i, ])
-  rmse_all = c(rmse_all, rmse)
-}
-
-min_index = which.min(rmse_all)
-min_value = min(rmse_all)
+print('lazy_index = ')
+print(result[1])
+print('lazy_rmse = ')
+print(result[2])
 
 if (FALSE)
 {
@@ -187,3 +152,4 @@ mse = mean((prediction[,"PredictedPrice"] - prediction[,"RealPrice"])^2)
 rmse = sqrt(mse)
 print(rmse)
 }
+
