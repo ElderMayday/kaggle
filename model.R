@@ -1,6 +1,7 @@
-library(lazy)
 library(tree)
 library(e1071)
+library(stats)
+library(lazy)
 
 setwd('D:/kaggle')  #TO-MODIFY sets the defaul folder depending on the directory path!!!
 source("parameters.R")
@@ -56,7 +57,7 @@ cross_validation <- function(folds, model_flag, param)
 
 
 #teaches a model depending of its type and hyperparameter
-#model_flag: 1 - tree, 2 - lazy, 3 - svm
+#model_flag: 1 - tree, 2 - lm, 3 - svm
 teach_model <- function(train, model_flag, param)
 {
   if (model_flag == 1)
@@ -65,11 +66,11 @@ teach_model <- function(train, model_flag, param)
   }
   else if (model_flag == 2)
   {
-    model = lazy(SalePrice~., train, control = lazy.control(conIdPar=NULL, linIdPar=param[1, 'linIdPar'], quaIdPar=NULL, distance=c("manhattan","euclidean"), metric=NULL, cmbPar=1, lambda=param[1, 'lambda']))
+    model = lm(SalePrice~., train) 
   }
   else if (model_flag == 3)
   {
-    model = svm(SalePrice~., train, degree=param[1, 'degree'], nu=param[1, 'nu'], cachesize = 100, tolerance=param[1, 'tolerance'], epsilon=param[1, 'epsilon'])
+    model = svm(SalePrice~., train, degree=10, nu = 0.8, cachesize = 100, tolerance = 0.1, epsilon = 0.5)
   }
   return(model)
 }
@@ -80,7 +81,7 @@ teach_model <- function(train, model_flag, param)
 
 select_model <- function(train, model_flag, param)
 {
-  folds = split_folds(train)
+  folds = split_folds(train, 5) #TO-REVIEW
   
   rmse_all = c()
   
@@ -108,15 +109,15 @@ print(result_tree[1])
 print('tree_rmse = ')
 print(result_tree[2])
 
-lazy_parameters = get_lazy_parameters()
-result_lazy = select_model(train, 2, lazy_parameters)
+lm_parameters = get_lm_parameters()
+result_lm = select_model(train, 2, lm_parameters)
 
 print('lazy_index = ')
-print(result_lazy[1])
+print(result_lm[1])
 print('lazy_rmse = ')
-print(result_lazy[2])
+print(result_lm[2])
 
-svm_parameters = get_svm_parameters()
+svm_parameters = get_svm_parameters()[20,]
 result_svm = select_model(train, 3, svm_parameters)
 
 print('svm_index = ')
@@ -126,17 +127,17 @@ print(result_svm[2])
 
 if (FALSE)
 {
-con=lazy.control(conIdPar=NULL, linIdPar=1, quaIdPar=NULL, distance=c("manhattan","euclidean"), metric=NULL, cmbPar=1, lambda=1e+03)
-model = lazy(SalePrice~., train,control=con)   #lazy
-
+  con=lazy.control(conIdPar=NULL, linIdPar=1, quaIdPar=NULL, distance=c("manhattan","euclidean"), metric=NULL, cmbPar=1, lambda=1e+03)
+  model = lazy(SalePrice~., train,control=con)
+  
 model = tree(SalePrice~., train, con=tree.control(nobs = 10000, mincut = 1, minsize = 2, mindev = 0))   #lazy
 
+model = lm(SalePrice~., train)
 
-model = svm(SalePrice~., train, degree=10, nu = 0.9, cachesize = 100, tolerance = 0.1, epsilon = 0.5)
+model = svm(SalePrice~., train, degree=10, nu = 0.8, cachesize = 100, tolerance = 0.1, epsilon = 0.5)
 
 
 prediction = train[,1:(ncol(train)-1)]
-predicted = predict(model, prediction)
 prediction[,"PredictedPrice"] = predict(model, prediction)
 prediction[,"RealPrice"] = train[,"SalePrice"]
 vec = prediction[,"PredictedPrice"] - prediction[,"RealPrice"]
