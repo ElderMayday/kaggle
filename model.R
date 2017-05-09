@@ -1,6 +1,7 @@
 library(lazy)
 library(tree)
 library(e1071)
+library(stats)
 
 setwd('D:/kaggle')  #TO-MODIFY sets the defaul folder depending on the directory path!!!
 source("parameters.R")
@@ -97,8 +98,19 @@ select_model <- function(train, model_flag, param)
 }
 
 
-train_raw = read.csv("./train.csv", header = TRUE)
+train_raw = read.csv("./train.csv", header = TRUE)   #stringsAsFactors is necessary to remove NAs
 train = feature_filter(train_raw)
+
+
+train_raw = read.csv("./train.csv", header = TRUE)   #stringsAsFactors is necessary to remove NAs
+train = feature_filter(train_raw)
+
+
+train = reassign_factors(train, train)
+
+
+
+
 
 
 tree_parameters = get_tree_parameters()
@@ -124,6 +136,16 @@ print('svm_index = ')
 print(result_svm[1])
 print('svm_rmse = ')
 print(result_svm[2])
+
+
+factor(train[,'Neighborhood'])
+
+
+nvalues = unique(train[,'Neighborhood'])
+
+where(nvalues == 'CollgCr')
+
+
 
 if (FALSE)
 {
