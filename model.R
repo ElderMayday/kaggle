@@ -2,6 +2,8 @@ library(tree)
 library(e1071)
 library(stats)
 library(lazy)
+library(caret)
+library(nnet)
 
 setwd('D:/kaggle')  #TO-MODIFY sets the defaul folder depending on the directory path!!!
 source("parameters.R")
@@ -136,6 +138,7 @@ model = lm(SalePrice~., train)
 
 model = svm(SalePrice~., train, degree=10, nu = 0.8, cachesize = 100, tolerance = 0.1, epsilon = 0.5)
 
+model <- train(SalePrice~., train, method='nnet', linout=TRUE, trace=FALSE, size=5, decay=0.001) 
 
 prediction = train[,1:(ncol(train)-1)]
 prediction[,"PredictedPrice"] = predict(model, prediction)
