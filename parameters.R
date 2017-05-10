@@ -3,9 +3,9 @@
 #creates a predefined set of hyperparameter configurations for tree model
 get_tree_parameters <- function()
 {
-  param_tree_1 = data.frame(nobs = 10000)
+  param_tree_1 = data.frame(nobs = 1460)
   
-  mincut_vector = c(1, 2, 3, 4, 5, 10, 20, 50, 100)
+  mincut_vector = c(1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 40, 50)
   minsize_vector = c(2:10)
   
   param_tree_2a = data.frame(mincut = mincut_vector)
@@ -13,7 +13,7 @@ get_tree_parameters <- function()
   param_tree_2 = merge(param_tree_2a, param_tree_2b)
   param_tree_2[,'minsize'] = param_tree_2[,'minsize'] * param_tree_2[,'mincut']
   
-  param_tree_3 = data.frame(mindev = c(0, 0.01, 0.05, 0.10, 0.50, 1.0, 10.0, 100.0))
+  param_tree_3 = data.frame(mindev = c(0, 0.01, 0.05, 0.10, 0.20, 0.30, 0.50, 1.0))
   
   param_tree = merge(param_tree_1, param_tree_2)
   param_tree = merge(param_tree, param_tree_3)

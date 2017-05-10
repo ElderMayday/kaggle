@@ -95,7 +95,9 @@ select_model <- function(train, model_flag, param)
   min_index = which.min(rmse_all)
   min_value = min(rmse_all)
   
-  return(c(min_index, min_value))
+  param[,'rmse'] = rmse_all
+  
+  return(param)
 }
 
 
