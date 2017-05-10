@@ -87,6 +87,7 @@ select_model <- function(train, model_flag, param)
   
   for (i in 1:nrow(param))
   {
+    print(i)
     rmse = cross_validation(folds, model_flag, param[i, ])
     rmse_all = c(rmse_all, rmse)
   }
@@ -102,9 +103,6 @@ train_raw = read.csv("./train.csv", header = TRUE)   #stringsAsFactors is necess
 train = feature_filter(train_raw)
 train = reassign_factors(train, train)
 train = replace_na(train)
-
-colnames(train)[colSums(is.na(train)) > 0]
-
 
 tree_parameters = get_tree_parameters()
 result_tree = select_model(train, 1, tree_parameters)

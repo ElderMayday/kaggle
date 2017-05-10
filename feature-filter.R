@@ -20,7 +20,7 @@ feature_filter_without_saleprice <- function(input) {
                                    ExterQual,Foundation,BsmtQual,BsmtFinType1,BsmtFinSF1,TotalBsmtSF,
                                    HeatingQC,X1stFlrSF,X2ndFlrSF,GrLivArea,FullBath,KitchenQual,
                                    TotRmsAbvGrd,Fireplaces,FireplaceQu,GarageType,GarageYrBlt,
-                                   GarageFinish,GarageCars,GarageArea,OpenPorchSF,))
+                                   GarageFinish,GarageCars,GarageArea,OpenPorchSF))
   return(result)
 }
 
