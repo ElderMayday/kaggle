@@ -100,17 +100,10 @@ select_model <- function(train, model_flag, param)
 
 train_raw = read.csv("./train.csv", header = TRUE)   #stringsAsFactors is necessary to remove NAs
 train = feature_filter(train_raw)
-
-
-train_raw = read.csv("./train.csv", header = TRUE)   #stringsAsFactors is necessary to remove NAs
-train = feature_filter(train_raw)
-
-
 train = reassign_factors(train, train)
+train = replace_na(train)
 
-
-
-
+colnames(train)[colSums(is.na(train)) > 0]
 
 
 tree_parameters = get_tree_parameters()

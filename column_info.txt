@@ -1,0 +1,33 @@
+1    MSSubClass    0.2566161
+2      MSZoning    0.1111115  factor reassigned
+3   LotFrontage    0.1547592                             NA repalced
+4       LotArea    0.1443197
+5  Neighborhood    0.4569727  factor reassigned
+6   OverallQual    0.4922011
+7     YearBuilt    0.2922323
+8  YearRemodAdd    0.2112479
+9   Exterior1st    0.1430904  factor reassigned
+10  Exterior2nd    0.1408458  factor reassigned
+11   MasVnrType    0.1027884  factor reassigned          NA repalced
+12   MasVnrArea    0.1031449                             NA repalced
+13    ExterQual    0.2837421  factor reassigned
+14   Foundation    0.1933651  factor reassigned
+15     BsmtQual    0.2870105                             NA
+16 BsmtFinType1    0.1519456                             NA
+17   BsmtFinSF1    0.1155452
+18  TotalBsmtSF    0.2765359
+19    HeatingQC    0.1329305 
+20    X1stFlrSF    0.2394652
+21    X2ndFlrSF    0.1728490
+22    GrLivArea    0.3825791
+23     FullBath    0.2339366
+24  KitchenQual    0.2770460
+25 TotRmsAbvGrd    0.1731205
+26   Fireplaces    0.1531060
+27  FireplaceQu    0.1963499                             NA
+28   GarageType    0.2144176                             NA
+29  GarageYrBlt    0.2569508                             NA repalced
+30 GarageFinish    0.2501103                             NA
+31   GarageCars    0.3281534
+32   GarageArea    0.3210374
+33  OpenPorchSF    0.1438957
