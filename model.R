@@ -106,6 +106,18 @@ train = feature_filter(train_raw)
 train = reassign_factors(train, train)
 train = replace_na(train)
 
+
+group = aggregate(train[,c('SalePrice')], list(train[,c('MSZoning')]), mean)
+group = group[order(group$x),]
+match('RM',group[,1])
+
+newcolumn = c()
+for (i in 1:nrow(train))
+  newcolumn = c(newcolumn, match(train[i,'MSZoning'],group[,1]))
+
+train[,'MSZoning'] = newcolumn
+
+
 tree_parameters = get_tree_parameters()
 result_tree = select_model(train, 1, tree_parameters)
 
