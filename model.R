@@ -66,7 +66,7 @@ teach_model <- function(train, model_flag, param)
   }
   else if (model_flag == 2)
   {
-    model = lazy(SalePrice~., train, control = lazy.control(conIdPar=NULL, linIdPar=param[1, 'linIdPar'], quaIdPar=NULL, distance=c("manhattan","euclidean"), metric=NULL, cmbPar=1, lambda=param[1, 'lambda']))
+    model = lazy(SalePrice~., train, control = lazy.control(conIdPar=NULL, linIdPar=param[1, 'linIdPar'], quaIdPar=NULL, distance=c("manhattan","euclidean"), metric=NULL, cmbPar=param[1, 'cmbPar'], lambda=param[1, 'lambda']))
   }
   else if (model_flag == 3)
   {
@@ -110,25 +110,25 @@ tree_parameters = get_tree_parameters()
 result_tree = select_model(train, 1, tree_parameters)
 
 print('tree_index = ')
-print(result_tree[1])
+print(which.min(result_tree[,'rmse']))
 print('tree_rmse = ')
-print(result_tree[2])
+print(min(result_tree[,'rmse']))
 
 lazy_parameters = get_lazy_parameters()
 result_lazy = select_model(train, 2, lazy_parameters)
 
 print('lazy_index = ')
-print(result_lazy[1])
+print(which.min(result_lazy[,'rmse']))
 print('lazy_rmse = ')
-print(result_lazy[2])
+print(min(result_lazy[,'rmse']))
 
 svm_parameters = get_svm_parameters()
 result_svm = select_model(train, 3, svm_parameters)
 
 print('svm_index = ')
-print(result_svm[1])
+print(which.min(result_svm[,'rmse']))
 print('svm_rmse = ')
-print(result_svm[2])
+print(min(result_svm[,'rmse']))
 
 
 factor(train[,'Neighborhood'])

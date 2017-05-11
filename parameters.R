@@ -25,8 +25,8 @@ get_lazy_parameters <- function()
 {
   param_lazy_1 = data.frame(linIdPar = c(1))
   param_lazy_2 = data.frame(metric = c(1))
-  param_lazy_3 = data.frame(cmbPar = c(1, 2, 3))
-  param_lazy_4 = data.frame(lambda = c(1e+01, 1e+02, 1e+03))
+  param_lazy_3 = data.frame(cmbPar = c(1, 1.5, 2, 2.5, 3))
+  param_lazy_4 = data.frame(lambda = c(10, 50, 100, 200, 1000))
   
   param_lazy = merge(param_lazy_1, param_lazy_2)
   param_lazy = merge(param_lazy, param_lazy_3)

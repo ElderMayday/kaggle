@@ -13,17 +13,17 @@ train = feature_filter(train_raw)
 train = reassign_factors(train, train)
 train = replace_na(train)
 
-tree_conf_id = 325
-lazy_conf_id = 4
-svm_conf_id = 81
+tree_conf_id = 54
+lazy_conf_id = 18
+svm_conf_id = 1
 
 tree_parameters = get_tree_parameters()[tree_conf_id,]
 lazy_parameters = get_lazy_parameters()[lazy_conf_id,]
 svm_parameters = get_svm_parameters()[svm_conf_id,]
 
-rmse_tree = 84761
-rmse_lazy = 27741
-rmse_svm = 91465
+rmse_tree = 71361
+rmse_lazy = 30307
+rmse_svm = 116588
 
 p1 = 1 / rmse_tree
 p2 = 1/ rmse_lazy
@@ -58,7 +58,7 @@ rmse = sqrt(mse)
 #-----------------------------------------------------------------
 
 test_raw = read.csv("./test.csv", header = TRUE)
-train_raw = read.csv("./train.csv", header = TRUE)   #stringsAsFactors is necessary to remove NAs
+train_raw = read.csv("./train.csv", header = TRUE)  
 train = feature_filter(train_raw)
 test = feature_filter_without_saleprice(test_raw)
 test = reassign_factors(train, test)
