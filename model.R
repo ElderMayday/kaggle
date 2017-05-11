@@ -3,19 +3,13 @@ library(tree)
 library(e1071)
 library(stats)
 
+
+
 setwd('D:/kaggle')  #TO-MODIFY sets the defaul folder depending on the directory path!!!
 source("parameters.R")
 source("split-folds.R")
 source("feature-filter.R")
 
-
-
-
-#evaluates the MSE of the prediction
-evaluate <- function(prediction)
-{
-  return(mean((prediction[,"PredictedPrice"] - prediction[,"RealPrice"])^2))
-}
 
 
 #teaches and evaluates an abstract model using cross-validation technique over the given [folds] with current [param] configuration
@@ -77,8 +71,7 @@ teach_model <- function(train, model_flag, param)
 
 
 
-
-
+#apply model selection to [train] dataframe with [model_flag] model over [param] configuration set
 select_model <- function(train, model_flag, param)
 {
   folds = split_folds(train)
@@ -87,7 +80,7 @@ select_model <- function(train, model_flag, param)
   
   for (i in 1:nrow(param))
   {
-    print(i)
+    #print(i)          #uncomment if you want to track selection progress
     rmse = cross_validation(folds, model_flag, param[i, ])
     rmse_all = c(rmse_all, rmse)
   }
@@ -101,74 +94,28 @@ select_model <- function(train, model_flag, param)
 }
 
 
-train_raw = read.csv("./train.csv", header = TRUE)   #stringsAsFactors is necessary to remove NAs
-train = feature_filter(train_raw)
+train_unfiltered = read.csv("./train.csv", header = TRUE)
+train = feature_filter(train_unfiltered)
 train = reassign_factors(train, train)
 train = replace_na(train)
 
-
-group = aggregate(train[,c('SalePrice')], list(train[,c('MSZoning')]), mean)
-group = group[order(group$x),]
-match('RM',group[,1])
-
-newcolumn = c()
-for (i in 1:nrow(train))
-  newcolumn = c(newcolumn, match(train[i,'MSZoning'],group[,1]))
-
-train[,'MSZoning'] = newcolumn
-
-
-tree_parameters = get_tree_parameters()
-result_tree = select_model(train, 1, tree_parameters)
-
+parameters_tree = get_parameters_tree()
+result_tree = select_model(train, 1, parameters_tree)
 print('tree_index = ')
 print(which.min(result_tree[,'rmse']))
 print('tree_rmse = ')
 print(min(result_tree[,'rmse']))
 
-lazy_parameters = get_lazy_parameters()
-result_lazy = select_model(train, 2, lazy_parameters)
-
+parameters_lazy = get_parameters_lazy()
+result_lazy = select_model(train, 2, parameters_lazy)
 print('lazy_index = ')
 print(which.min(result_lazy[,'rmse']))
 print('lazy_rmse = ')
 print(min(result_lazy[,'rmse']))
 
-svm_parameters = get_svm_parameters()
-result_svm = select_model(train, 3, svm_parameters)
-
+parameters_svm = get_parameters_svm()
+result_svm = select_model(train, 3, parameters_svm)
 print('svm_index = ')
 print(which.min(result_svm[,'rmse']))
 print('svm_rmse = ')
 print(min(result_svm[,'rmse']))
-
-
-factor(train[,'Neighborhood'])
-
-
-nvalues = unique(train[,'Neighborhood'])
-
-where(nvalues == 'CollgCr')
-
-
-
-if (FALSE)
-{
-con=lazy.control(conIdPar=NULL, linIdPar=1, quaIdPar=NULL, distance=c("manhattan","euclidean"), metric=NULL, cmbPar=1, lambda=1e+03)
-model = lazy(SalePrice~., train,control=con)   #lazy
-
-model = tree(SalePrice~., train, con=tree.control(nobs = 10000, mincut = 1, minsize = 2, mindev = 0))   #lazy
-
-
-model = svm(SalePrice~., train, degree=10, nu = 0.9, cachesize = 100, tolerance = 0.1, epsilon = 0.5)
-
-
-prediction = train[,1:(ncol(train)-1)]
-prediction[,"PredictedPrice"] = predict(model, prediction)
-prediction[,"RealPrice"] = train[,"SalePrice"]
-vec = prediction[,"PredictedPrice"] - prediction[,"RealPrice"]
-mse = mean((prediction[,"PredictedPrice"] - prediction[,"RealPrice"])^2)
-rmse = sqrt(mse)
-print(rmse)
-}
-

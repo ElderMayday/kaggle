@@ -21,6 +21,9 @@ feature_selector <- function(data)
       result <- rbind(result, data.frame("feature_name"= row_names[i], "feature_gain" = features[i, 1]))
     }
   }
+  
+  #order the features
+  result = result[rev(order(result$feature_gain)),]
 
   #print the selected features
   print(result)

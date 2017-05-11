@@ -1,4 +1,4 @@
-#model script must be run before this in order to get result_tree, result_lazy, result_svm
+# [model.R] script must be run before in order to obtain result_tree, result_lazy, result_svm
 
 
 # tree

@@ -1,7 +1,7 @@
 #contains functions for producing the model configuration sets
 
 #creates a predefined set of hyperparameter configurations for tree model
-get_tree_parameters <- function()
+get_parameters_tree <- function()
 {
   param_tree_1 = data.frame(nobs = 1460)
   
@@ -21,7 +21,7 @@ get_tree_parameters <- function()
 }
 
 #creates a predefined set of hyperparameter configurations for lazy model
-get_lazy_parameters <- function()
+get_parameters_lazy <- function()
 {
   param_lazy_1 = data.frame(linIdPar = c(1))
   param_lazy_2 = data.frame(metric = c(1))
@@ -35,8 +35,8 @@ get_lazy_parameters <- function()
   return(param_lazy)
 }
 
-#creates a predefined set of hyperparameter configurations for lazy model
-get_svm_parameters <- function()
+#creates a predefined set of hyperparameter configurations for svm model
+get_parameters_svm <- function()
 {
   model = svm(SalePrice~., train, degree=10, nu = 0.9, cachesize = 100, tolerance = 0.1, epsilon = 0.5)
   
