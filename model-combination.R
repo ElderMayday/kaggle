@@ -5,8 +5,10 @@ library(tree)
 library(e1071)
 
 setwd('D:/kaggle')  #TO-MODIFY sets the defaul folder depending on the directory path!!!
+
 source("parameters.R")
 source("feature-filter.R")
+source("teach-model.R")
 
 train_raw = read.csv("./train.csv", header = TRUE)
 train = feature_filter(train_raw)
@@ -19,9 +21,9 @@ lazy_conf_id = 18
 svm_conf_id = 1
 
 #retrieve best configurations
-tree_parameters = get_tree_parameters()[tree_conf_id,]
-lazy_parameters = get_lazy_parameters()[lazy_conf_id,]
-svm_parameters = get_svm_parameters()[svm_conf_id,]
+tree_parameters = get_parameters_tree()[tree_conf_id,]
+lazy_parameters = get_parameters_lazy()[lazy_conf_id,]
+svm_parameters = get_parameters_svm()[svm_conf_id,]
 
 #hardcoded rmse of the best model configurations in order to bias the result solution for the test set
 rmse_tree = 71361

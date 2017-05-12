@@ -1,14 +1,15 @@
 library(lazy)
 library(tree)
 library(e1071)
-library(stats)
 
 
 
 setwd('D:/kaggle')  #TO-MODIFY sets the defaul folder depending on the directory path!!!
+
 source("parameters.R")
 source("split-folds.R")
 source("feature-filter.R")
+source("teach-model.R")
 
 
 
@@ -46,27 +47,6 @@ cross_validation <- function(folds, model_flag, param)
   }
   
   return(sqrt(mse))
-}
-
-
-
-#teaches a model depending of its type and hyperparameter
-#model_flag: 1 - tree, 2 - lazy, 3 - svm
-teach_model <- function(train, model_flag, param)
-{
-  if (model_flag == 1)
-  {
-    model = tree(SalePrice~., train, control = tree.control(nobs = param[1, 'nobs'], mincut = param[1, 'mincut'], minsize = param[1, 'minsize'], mindev = param[1, 'mindev']))
-  }
-  else if (model_flag == 2)
-  {
-    model = lazy(SalePrice~., train, control = lazy.control(conIdPar=NULL, linIdPar=param[1, 'linIdPar'], quaIdPar=NULL, distance=c("manhattan","euclidean"), metric=NULL, cmbPar=param[1, 'cmbPar'], lambda=param[1, 'lambda']))
-  }
-  else if (model_flag == 3)
-  {
-    model = svm(SalePrice~., train, degree=param[1, 'degree'], nu=param[1, 'nu'], cachesize = 100, tolerance=param[1, 'tolerance'], epsilon=param[1, 'epsilon'])
-  }
-  return(model)
 }
 
 
