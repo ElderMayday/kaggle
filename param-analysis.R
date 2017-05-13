@@ -3,7 +3,7 @@
 
 # tree
 
-group = aggregate(result_tree[,c('rmse')], list(result_tree$nobs), mean) #no affected
+group = aggregate(result_tree[,c('rmse')], list(result_tree$nobs), mean) #no impact
 plot(group[,1],group[,2])
 
 group = aggregate(result_tree[,c('rmse')], list(result_tree$mincut), mean)  # 10
@@ -32,10 +32,10 @@ plot(group[,1],group[,2])
 # degree
 
 
-group = aggregate(result_svm[,c('rmse')], list(result_svm$degree), mean)  #no affected
+group = aggregate(result_svm[,c('rmse')], list(result_svm$degree), mean)  #no impact
 plot(group[,1],group[,2])
 
-group = aggregate(result_svm[,c('rmse')], list(result_svm$nu), mean)  #no affected
+group = aggregate(result_svm[,c('rmse')], list(result_svm$nu), mean)  #no impact
 plot(group[,1],group[,2])
 
 group = aggregate(result_svm[,c('rmse')], list(result_svm$tolerance), mean)   #0.001

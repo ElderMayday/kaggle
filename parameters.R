@@ -38,8 +38,6 @@ get_parameters_lazy <- function()
 #creates a predefined set of hyperparameter configurations for svm model
 get_parameters_svm <- function()
 {
-  model = svm(SalePrice~., train, degree=10, nu = 0.9, cachesize = 100, tolerance = 0.1, epsilon = 0.5)
-  
   param_svm_1 = data.frame(degree = c(3, 4, 5, 10))
   param_svm_2 = data.frame(nu = c(0.5, 0.7, 0.9, 1.0))
   param_svm_3 = data.frame(tolerance = c(0.001, 0.01, 0.1))
