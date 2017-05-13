@@ -1,5 +1,5 @@
 #Filters the train dataframe by features
-#Only higher than 0.1 IG features were selected
+#The only features that pass are those which have been selected by feature-selection procedure.
 feature_filter <- function(input) {
   result <- subset(input, select=c(MSSubClass,MSZoning,LotFrontage,LotArea,Neighborhood,OverallQual,
                                    YearBuilt,YearRemodAdd,Exterior1st,Exterior2nd,MasVnrType,MasVnrArea,
