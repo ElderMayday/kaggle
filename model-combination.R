@@ -37,17 +37,17 @@ train = replace_na(train)
 
 
 #assign hardcoded precomputated indexes of the best model configurations
-tree_conf_id = 54
-lazy_conf_id = 18
-svm_conf_id = 1
+tree_conf_id = 9
+lazy_conf_id = 6
+svm_conf_id = 33
 
 tree_parameters = get_parameters_tree()[tree_conf_id,]
 lazy_parameters = get_parameters_lazy()[lazy_conf_id,]
 svm_parameters = get_parameters_svm()[svm_conf_id,]
 
-rmse_tree = 71361
-rmse_lazy = 30307
-rmse_svm = 116588
+rmse_tree = 0.5835374
+rmse_lazy = 0.2210736
+rmse_svm = 0.9607639
 
 model_tree = teach_model(train, 1, tree_parameters)
 model_lazy = teach_model(train, 2, lazy_parameters)
@@ -58,7 +58,7 @@ model_svm = teach_model(train, 3, svm_parameters)
 data = replace_na(train)[,1:(ncol(train)-1)]   #train data without SalePrice column
 predicted = combine(data, model_tree, model_lazy, model_svm, rmse_tree, rmse_lazy, rmse_svm)
 
-mse = mean((predicted - train[,'SalePrice'])^2)
+mse = mean((log2(predicted) - log2(train[,'SalePrice']))^2)
 rmse = sqrt(mse)
 
 #apply to test set

@@ -40,7 +40,7 @@ cross_validation <- function(folds, model_flag, param)
     
     prediction = test[,1:(ncol(test)-1)]
     predicted = predict(model, prediction)
-    mse = mean((predicted[[1]] - test[,"SalePrice"])^2)
+    mse = mean((log2(predicted[[1]]) - log2(test[,"SalePrice"]))^2)
     mse_all = c(mse_all, mse)
     
     iteration = iteration + 1
