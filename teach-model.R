@@ -8,7 +8,10 @@ teach_model <- function(train, model_flag, param)
   }
   else if (model_flag == 2)
   {
-    model = lazy(SalePrice~., train, control = lazy.control(conIdPar=NULL, linIdPar=param[1, 'linIdPar'], quaIdPar=NULL, distance=c("manhattan","euclidean"), metric=NULL, cmbPar=param[1, 'cmbPar'], lambda=param[1, 'lambda']))
+    if (param[1, 'distance'] == 1)
+      model = lazy(SalePrice~., train, control = lazy.control(conIdPar=NULL, linIdPar=param[1, 'linIdPar'], quaIdPar=NULL, distance=c("manhattan"), metric=NULL, cmbPar=param[1, 'cmbPar'], lambda=param[1, 'lambda']))
+    else
+      model = lazy(SalePrice~., train, control = lazy.control(conIdPar=NULL, linIdPar=param[1, 'linIdPar'], quaIdPar=NULL, distance=c("euclidean"), metric=NULL, cmbPar=param[1, 'cmbPar'], lambda=param[1, 'lambda']))
   }
   else if (model_flag == 3)
   {
