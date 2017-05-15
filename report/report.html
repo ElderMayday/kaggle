@@ -11784,7 +11784,7 @@ div#notebook {
 <p>Many features (attributes) are supposed to contribute the prediction value and still some of them should be considered inconsistent or inefficient. In order to select the desired features one can apply either <strong>filter methods</strong> (i.e. regarding the features independently) or <strong>wrapper methods</strong> (i.e. regarding subsets of feature). Still for the sake of simplicity we use filter methods. As a grade of feature "usefullness" we use information grade measure (IG). This measure is based on the notion of entropy. Entropy itself characterizes the grade of system's disorder.</p>
 $$H = - \sum_{i=1}^{n} p_i log_b (p_i), \textit{where } p_i \textit{ - probability of i-th outcome}$$<p>IG while performing a transition from state 1 to state 2 is as follows.</p>
 $$IG(1\rightarrow2) = H(1) - H(2)$$<p>After computing this value for every feature separatedly we can order the features and slice the most important ones.
-<strong>Warning!</strong> To run the code one must download the whole repository with data files and script, plus correct the folder paths in each of the scripts usning setwd(), plus install the included libraries for the jupyter.</p>
+<strong>Warning!</strong> To run the code one must download the whole repository with data files and script, plus correct the folder paths in each of the scripts using setwd(), plus install the included libraries for the jupyter.</p>
 <p>The following code performs the feature selection procedure. It uses FSelector package which allows to compute IG vector for each of the features.</p>
 
 </div>
